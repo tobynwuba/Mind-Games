@@ -5,9 +5,8 @@ Input is the Game State of the infection Board Game, output the best move for pl
 from copy import deepcopy
 
 def play():
-    depth = [3]
+    depth = [4]
     game_state = open('GameState.txt', 'r')
-    around = [[0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1]]
     chosen_move = [0]
     positions = {0: set(), 1: set(), 2: set()}
     board = game_state.readlines()
@@ -25,12 +24,6 @@ def play():
         if level > depth[0]:
             return
         for r1, c1 in s[idx]:
-            if level != 1 and level % 2:
-                if minimax >= past_minimax:
-                    return
-            elif not level % 2:
-                if minimax <= past_minimax:
-                    return
             for r in xrange(-2, 3):
                 for c in xrange(-2, 3):
                     if (r, c) == (0, 0):
@@ -41,6 +34,12 @@ def play():
                     if sorted(arr[idx]) == sorted(s[idx]):
                         continue
                     #else: print arr[1]
+                    if level != 1 and level % 2:
+                        if minimax >= past_minimax:
+                            return
+                    elif not level % 2:
+                        if minimax <= past_minimax:
+                            return
                     dfs(arr, level + 1, minimax)
                     if idx == 2:
                         minimax = maxi(arr, level, minimax, [r1, c1, r2, c2])
@@ -78,13 +77,16 @@ def play():
         return change(arr, idx, r2, c2)
 
     def change(arr, idx, r2, c2):
-        for i, j in around:
-            r3, c3 = [r2 + i, c2 + j]
-            if min(r3, c3) < 0 or max(r3, c3) > 5: continue
-            other = (idx % 2) + 1
-            if (r3, c3) in arr[other]:
-                arr[other].remove((r3, c3))
-                arr[idx].add((r3, c3))
+        global size
+        for i in [-1, 2]:
+            for j in [-1, 2]:
+                r3, c3 = [r2 + i, c2 + j]
+                if min(r3, c3) < 0 or max(r3, c3) >= size:
+                    continue
+                other = (idx % 2) + 1
+                if (r3, c3) in arr[other]:
+                    arr[other].remove((r3, c3))
+                    arr[idx].add((r3, c3))
         return arr
 
     #print positions
