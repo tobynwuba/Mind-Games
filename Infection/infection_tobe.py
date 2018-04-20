@@ -1,9 +1,11 @@
+"""
+Input is the Game State of the infection Board Game, output the best move for player 2
+"""
+
 from copy import deepcopy
-from random import sample
-from timeit import timeit
 
 def play():
-    depth = [4]
+    depth = [3]
     game_state = open('GameState.txt', 'r')
     around = [[0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1]]
     chosen_move = [0]
@@ -30,7 +32,7 @@ def play():
                 if minimax <= past_minimax:
                     return
             for r in xrange(-2, 3):
-                for c in xrange(-abs(r), abs(r) + 1):
+                for c in xrange(-2, 3):
                     if (r, c) == (0, 0):
                         continue
                     r2, c2 = [r1 + r, c1 + c]
@@ -47,7 +49,7 @@ def play():
 
     def maxi(arr, level, minimax,  moves):
         if len(arr[2]) > minimax:
-            minimax = len(arr[1])
+            minimax = len(arr[2])
             if level == 1:
                 chosen_move[0] = moves
         return minimax
@@ -100,4 +102,5 @@ def play():
     for i in xrange(size):
         print >> rewrite, " ".join(map(str, arr[i]))
     rewrite.close()
+
 # print timeit("play()", setup="from __main__ import play", number=2)
