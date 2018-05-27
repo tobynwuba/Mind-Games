@@ -1,4 +1,4 @@
-from copy import deepcopy
+from random import sample
 
 game_state = open('GameState.txt', 'r')
 positions = {0: set(), 1: set(), 2: set()}
@@ -40,6 +40,13 @@ def unmake_move(fromm, mid, to):
     positions[2].add(to)
 
 
+def hash_it(position):
+    ans = 0
+    for x, y in position:
+        ans += 10 ** ((7 * x) + y)
+    return ans
+
+
 def dfs():
     # print(GS)
     for r1, c1 in positions[1]:
@@ -55,12 +62,22 @@ def dfs():
                 return last
 
 
+def sort_key(x):
+    ans = False
+    for blanks in positions[2]:
+        if (blanks[0] == x[0] and abs(blanks[1] - x[1]) <= 1) or (blanks[1] == x[1] and abs(blanks[0] - x[0]) <= 1):
+            ans = True
+            break
+    return ans, x
+
+
 def dfs_visit(fromm, mid, to):
     make_move(fromm, mid, to)
     last = 0
-    position = tuple(sorted(positions[1]))
-    if position not in mem:
-        mem.add(position)
+    position = sorted(positions[1], reverse=True)
+    hashed = hash_it(position)
+    if hashed not in mem:
+        mem.add(hashed)
         for r1, c1 in position:
             for r, c in moves:
                 if len(positions[1]) == 1:
@@ -84,7 +101,7 @@ def dfs_visit(fromm, mid, to):
 
 
 last = dfs()
-print "done"
+print "Done"
 for i in ans[::-1]:
     print i
     raw_input("Enter for next move")
