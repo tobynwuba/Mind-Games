@@ -1,6 +1,6 @@
 """
 This code is meant to solve the Chess stages for microsoft mind games, takes the game state as input and outputs the
-moves sequencially
+moves sequentially
 """
 from copy import deepcopy
 # from timeit import timeit
